@@ -1,0 +1,8 @@
+[package]
+name = "skass/instancequerier"
+version = "0.0.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+include = ["default.project.json", "src"]
+
+[dependencies]
