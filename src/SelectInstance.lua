@@ -1,27 +1,38 @@
-local Lexer = require(script.Parent.Lexer)
+--!strict
+local lexer = require(script.Parent.lexer)
 
-local SelectInstance = function(Root, Selection)
-	local Tokens = Lexer(Selection)
-	local Child = Root
+local selectInstance = function(root: Instance, selection: string): (boolean, string | Instance)
+	local tokens = lexer(selection)
+	local child = root
 
-	local Index = 1
-	while #Tokens >= Index do
-		local Identifier = Tokens[Index]
-		local Seperator = Tokens[Index + 1]
+	local index = 1
+	while #tokens >= index do
+		local identifier = tokens[index]
+		local seperator = tokens[index + 1]
 
-		assert(Identifier.Type == "Identifier", "Expected Identifier, got " .. Identifier.Type .. " instead.")
-
-		Child = assert(Child:FindFirstChild(Identifier.Value), ("Could not find child '%s'."):format(Child.Name))
-		if Seperator == nil then
-			return Child
+		if identifier.ttype ~= "Identifier" then
+			return false, "Expected Identifier, got " .. identifier.ttype .. " instead."
 		end
 
-		assert(Seperator.Type == "Seperator", "Expected Identifier, got " .. Identifier.Type .. " instead.")
+		local newChild: Instance? = child:FindFirstChild(identifier.Value)
+		if newChild == nil then
+			return false, ("Could not find child '%s'."):format(child.Name)
+		end
 
-		Index += 2
+		child = assert(newChild, "Unreachable")
+
+		if seperator == nil then
+			return true, child
+		end
+
+		if seperator.ttype ~= "seperator" then
+			return false, "Expected Identifier, got " .. identifier.ttype .. " instead."
+		end
+
+		index += 2
 	end
 
-	return Child
+	return true, child
 end
 
-return SelectInstance
+return selectInstance

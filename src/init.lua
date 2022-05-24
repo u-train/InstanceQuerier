@@ -1,9 +1,10 @@
-local Lexer = require(script.Lexer)
-local EscapeFullName = require(script.EscapeFullName)
-local SelectInstance = require(script.SelectInstance)
+--!strict
+local lexer = require(script.lexer)
+local escapeFullName = require(script.escapeFullName)
+local selectInstance = require(script.selectInstance)
 
 return {
-	Select = SelectInstance,
-	EscapeFullName = EscapeFullName,
-	Lexer = Lexer
+	select = selectInstance,
+	escapeFullName = escapeFullName,
+	lexer = lexer
 }

@@ -1,17 +1,24 @@
-local EscapeFullName = function(TargetInstance)
-	local Tree = {}
-	local FullName = {}
+--!strict
+local escapeFullName = function(targetInstance: Instance): string
+	assert(
+		typeof(targetInstance) == "Instance",
+		"Arg #1 expecting an Instance got " .. typeof(targetInstance) .. " instead."
+	)
 
-	repeat
-		table.insert(Tree, TargetInstance)
-		TargetInstance = TargetInstance.Parent
-	until TargetInstance == game or TargetInstance == nil
+	local currentInstance = targetInstance
+	local tree = {}
+	local fullName = {}
 
-	for i = #Tree, 1, -1 do
-		table.insert(FullName, (Tree[i].Name:gsub("/", "//"):gsub("%.", "/.")))
+	while currentInstance and currentInstance ~= game :: Instance do
+		table.insert(tree, currentInstance)
+		currentInstance = currentInstance.Parent
 	end
 
-	return table.concat(FullName, ".")
+	for i = #tree, 1, -1 do
+		table.insert(fullName, (tree[i].Name:gsub("/", "//"):gsub("%.", "/.")))
+	end
+
+	return table.concat(fullName, ".")
 end
 
-return EscapeFullName
+return escapeFullName

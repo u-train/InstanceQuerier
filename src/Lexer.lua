@@ -1,60 +1,71 @@
-local ValidCharacters = "[%w%s%(%)%,%-]"
-local Lexer = function(Input)
-	local Tokens = {}
+--!strict
+local VAILD_IDENTIFIER = "[^%.%/]"
 
-	local Index = 1
+export type Lexed = {
+	[number]: {
+		ttype: "Identifier",
+		value: string,
+	} | {
+		ttype: "Seperator",
+	},
+}
 
-	while #Input > Index do
-		local Character = Input:sub(Index, Index)
+local lexer = function(input: string): Lexed
+	local tokens: Lexed = {}
 
-		if Character:match(ValidCharacters) or Character:match("/") then
-			local Identifier = {}
+	local index = 1
+
+	while #input > index do
+		local character = input:sub(index, index)
+
+		if character:match(VAILD_IDENTIFIER) or character:match("/") then
+			local identifier = {}
 
 			while true do
-				local MatchedCharacter = Input:sub(Index, Index)
+				local matchedCharacter = input:sub(index, index)
 
-				if MatchedCharacter == "" then
+				if matchedCharacter == "" then
 					break
-				elseif MatchedCharacter:match("%.") then
+				elseif matchedCharacter:match("%.") then
 					break
-				elseif MatchedCharacter:match(ValidCharacters) then
-					table.insert(Identifier, MatchedCharacter)
-					Index += 1
-				elseif MatchedCharacter:match("/") then
-					local Peek = Input:sub(Index + 1, Index + 1)
-					if Peek:match("%.") then
-						table.insert(Identifier, ".")
-						Index += 2
-					elseif Peek:match("/") then
-						table.insert(Identifier, "/")
-						Index += 2
+				elseif matchedCharacter:match(VAILD_IDENTIFIER) then
+					table.insert(identifier, matchedCharacter)
+					index += 1
+				elseif matchedCharacter:match("/") then
+					local peek = input:sub(index + 1, index + 1)
+					if peek:match("%.") then
+						table.insert(identifier, ".")
+						index += 2
+					elseif peek:match("/") then
+						table.insert(identifier, "/")
+						index += 2
 					else
-						table.insert(Identifier, "/")
-						Index += 1
+						table.insert(identifier, "/")
+						index += 1
 					end
 				else
 					error(
 						"Unexpected character found while parsing an identifier '"
-							.. string.format("%q", MatchedCharacter)
+							.. string.format("%q", matchedCharacter)
 							.. "'."
 					)
 				end
 			end
 
-			table.insert(Tokens, {
-				Type = "Identifier",
-				Value = table.concat(Identifier),
+			table.insert(tokens, {
+				ttype = "Identifier",
+				value = table.concat(identifier),
 			})
-		elseif Character:match("%.") then
-			table.insert(Tokens, {
-				Type = "Seperator",
+		elseif character:match("%.") then
+			table.insert(tokens, {
+				ttype = "Seperator",
 			})
 
-			Index += 1
+			index += 1
 		end
 	end
 
-	return Tokens
+	return tokens
 end
 
-return Lexer
+return lexer
