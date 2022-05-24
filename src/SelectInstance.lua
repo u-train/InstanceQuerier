@@ -14,6 +14,8 @@ local selectInstance = function(root: Instance, selection: string): (boolean, st
 			return false, "Expected Identifier, got " .. identifier.ttype .. " instead."
 		end
 
+		assert(identifier.ttype == "Identifier", "Unreachable")
+
 		local newChild: Instance? = child:FindFirstChild(identifier.value)
 		if newChild == nil then
 			return false, ("Could not find child '%s'."):format(child.Name)
