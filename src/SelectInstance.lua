@@ -14,7 +14,7 @@ local selectInstance = function(root: Instance, selection: string): (boolean, st
 			return false, "Expected Identifier, got " .. identifier.ttype .. " instead."
 		end
 
-		local newChild: Instance? = child:FindFirstChild(identifier.Value)
+		local newChild: Instance? = child:FindFirstChild(identifier.value)
 		if newChild == nil then
 			return false, ("Could not find child '%s'."):format(child.Name)
 		end
@@ -25,8 +25,8 @@ local selectInstance = function(root: Instance, selection: string): (boolean, st
 			return true, child
 		end
 
-		if seperator.ttype ~= "seperator" then
-			return false, "Expected Identifier, got " .. identifier.ttype .. " instead."
+		if seperator.ttype ~= "Seperator" then
+			return false, "Expected Seperator, got " .. identifier.ttype .. " instead."
 		end
 
 		index += 2
