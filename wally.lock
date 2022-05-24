@@ -3,6 +3,6 @@
 registry = "test"
 
 [[package]]
-name = "skass/instancequerier"
+name = "u-train/instancequerier"
 version = "0.0.1"
 dependencies = []
